@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const userRoute = require('./user');
 const io = require('socket.io')(5000, {
   cors: { origin: '*' },
 });
@@ -9,13 +8,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-userRoute.post('/enter-user', (req, res) => {
+app.post('/enter-user', (req, res) => {
   const { username } = req.body;
   users.push({ id: users.length, username, socket: '', numOfMsg: 0 });
   res.status(200).json({ id: users.length - 1, username }); //because now the index has increased
 });
 
-userRoute.get('/user-socket', (req, res) => {
+app.get('/user-socket', (req, res) => {
   const { id } = req.body;
   const index = users.findIndex((user) => user.id === id);
   if (users[index]) res.status(200).json({ user: users[index] });
