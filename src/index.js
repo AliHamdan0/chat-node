@@ -8,6 +8,8 @@ const server = app.listen(process.env.PORT, () =>
 );
 const io = require('socket.io')(server, {
   cors: { origin: '*' },
+  forceNew: true,
+  transports: ['polling'],
 }).listen(server);
 
 app.use(cors());
