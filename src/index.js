@@ -1,8 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const { users } = require('./users');
-const io = require('socket.io')(5000, {
-  cors: { origin: '*' },
+const { Server } = require('socket.io');
+const { createServer } = require('http');
+const httpServer = createServer();
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+  },
 });
 
 const app = express();
@@ -22,7 +28,7 @@ app.get('/user-socket', (req, res) => {
   else res.status(200).json({ user: null });
 });
 app.listen(8080, () => console.log('Server is Running'));
-
+httpServer.listen(3000);
 ///this function runs every time a client connects to the server
 io.on('connection', (socket) => {
   if (users.length > 0) {
