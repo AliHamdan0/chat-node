@@ -1,17 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const { users } = require('./users');
-const { Server } = require('socket.io');
-const { createServer } = require('http');
-const httpServer = createServer();
-
-const io = new Server(httpServer, {
-  cors: {
-    origin: '*',
-  },
-});
-
+const dot = require('dotenv').config();
 const app = express();
+const server = app.listen(process.env.PORT, () =>
+  console.log('server is running')
+);
+const io = require('socket.io')(server, {
+  cors: { origin: '*' },
+}).listen(server);
+
 app.use(cors());
 app.use(express.json());
 
@@ -27,8 +25,7 @@ app.get('/user-socket', (req, res) => {
   if (users[index]) res.status(200).json({ user: users[index] });
   else res.status(200).json({ user: null });
 });
-app.listen(8080, () => console.log('Server is Running'));
-httpServer.listen(3000);
+
 ///this function runs every time a client connects to the server
 io.on('connection', (socket) => {
   if (users.length > 0) {
